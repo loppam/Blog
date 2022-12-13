@@ -34,15 +34,15 @@ const create = () => {
                 <input type="text" required value={title} onChange={(e) => setTitle(e.target.value)}/>
                 <label>Blog Body:</label>
                 <textarea required value={body} onChange={(e) => setBody(e.target.value)}></textarea>
-                <input type="file" value={ image } onChange={(e) => setImage(e.target.files[0])} name="myFile" id="filename" placeholder="Upload Image" />
+                {/* <input type="file" value={ image } onChange={(e) => setImage(e.target.files[0])} name="myFile" id="filename" placeholder="Upload Image" /> */}
                 <label>Blog Author:</label>
                 <input type='text' required value={author} onChange={(e) => setAuthor(e.target.value)}/>
                 {!isPending && <button>Add Blog</button>}
                 {isPending && <button disabled>Adding Blog....</button>}
-                <p>{ title }</p>
+                {/* <p>{ title }</p>
                 <p>{ body }</p>
                 <p>{ author }</p>
-                <img src={image} alt="" />
+                <img src={image} alt="" /> */}
             </form>
         </div>
     );
