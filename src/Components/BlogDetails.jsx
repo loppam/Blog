@@ -1,33 +1,53 @@
-import { useHistory, useParams } from "react-router-dom";
-import useFetch from "../useFetch";
+import { useParams} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { db } from "./firebase";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { useHistory } from "react-router-dom";
 
 const BlogDetails = () => {
-    const { id } = useParams()
-    const { data: blog, error, isPending } = useFetch('http://localhost:8000/blogs/' + id);
-    const history = useHistory();
-    const handleClick =() => {
-        fetch('http://localhost:8000/blogs/' + blog.id,{
-            method: 'DELETE'
-        }).then(() => {
-            history.push('/')
-        })
-    }
+  const [blogDetails, setBlogDetails] = useState([]);
+  const blogDetailsCollectionRef = collection(db, "blogdetails");
+  const { id } = useParams();
+  const history = useHistory();
 
-    return (
-        <div className="blog-details">
-            { isPending && <div>Loading...</div> }
-            { error && <div>{ error }</div> }
-            { blog && (
-                <article>
-                    <h2>{ blog.title }</h2>
-                    <p>Written by: { blog.author }</p>
-                    {/* <img src={blog.image} alt="" /> */}
-                    <div>{blog.body}</div>
-                    <button onClick={handleClick}>Delete</button>
-                </article>
-            )}
-        </div>
-    );
-}
- 
+  const deleteBlog = async (id) => {
+    const blogDoc = doc(db, "blogdetails", id);
+    await deleteDoc(blogDoc);
+    history.push("/");
+  };
+  useEffect(() => {
+    const getBlogDetails = async () => {
+      const data = await getDocs(blogDetailsCollectionRef);
+      setBlogDetails(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+    getBlogDetails();
+  }, []);
+
+  return (
+    <div className="blog-details">
+      {blogDetails.map((blogdetail) => {
+        if (blogdetail.id === `${id}`) {
+          console.log("izz gone");
+          console.log(blogdetail.id);
+
+          return (
+            <article>
+              <h2>{blogdetail.title}</h2>
+              <p>Written by: {blogdetail.author}</p>
+              <div>{blogdetail.body}</div>
+              <button
+                onClick={() => {
+                  deleteBlog(blogdetail.id);
+                }}
+              >
+                Delete
+              </button>
+            </article>
+          );
+        }
+      })}
+    </div>
+  );
+};
+
 export default BlogDetails;

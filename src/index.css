@@ -34,7 +34,9 @@
   margin: 40px auto;
   padding: 20px;
 }
-
+article{
+  margin-bottom: 40px;
+}
 .blog-preview{
   padding: 10px 16px;
   margin: 20px 0;

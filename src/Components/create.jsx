@@ -1,51 +1,74 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { db } from "./firebase";
 import { useHistory } from "react-router-dom";
-import { useRef } from "react";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  setDoc,
+  deleteDoc,
+  doc,
+  query,
+  onSnapshot,
+} from "firebase/firestore";
 
 const create = () => {
-    const [title, setTitle] = useState('');
-    const [body, setBody] = useState('');
-    const [author, setAuthor] = useState('');
-    const [image, setImage] = useState('');
-    const [isPending, setIsPending] = useState(false);
-    const history = useHistory();
+  const [newtitle, setnewTitle] = useState("");
+  const [newbody, setnewBody] = useState("");
+  const [newauthor, setnewAuthor] = useState("");
+  const [blogDetails, setBlogDetails] = useState([]);
+  const blogDetailsCollectionRef = collection(db, "blogdetails");
+  const history = useHistory();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const blog = { title, body, author, image };
+  useEffect(() => {
+    const getBlogDetails = async () => {
+      const data = await getDocs(blogDetailsCollectionRef);
+      setBlogDetails(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+    getBlogDetails();
+  }, []);
 
-        setIsPending(true)
+  const addBlog = async (e) => {
+    e.preventDefault();
+    await addDoc(blogDetailsCollectionRef, {
+      author: newauthor,
+      body: newbody,
+      title: newtitle,
+    });
+    history.push("/");
+  };
+  return (
+    <div className="create">
+      <h2>Add New Blog</h2>
+      <form onSubmit={addBlog}>
+        <label>Blog title:</label>
+        <input
+          type="text"
+          required
+          onChange={(event) => {
+            setnewTitle(event.target.value);
+          }}
+        />
+        <label>Blog Body:</label>
+        <textarea
+          required
+          onChange={(event) => {
+            setnewBody(event.target.value);
+          }}
+        ></textarea>
+        <label>Blog Author:</label>
+        <input
+          type="text"
+          required
+          onChange={(event) => {
+            setnewAuthor(event.target.value);
+          }}
+        />
+        <button>Add Blog</button>
+        {/* <input type="submit" value="Add Blog" /> */}
+      </form>
+    </div>
+  );
+};
 
-        fetch('http://localhost:8000/blogs', {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(blog)
-        }) .then(() => {
-            console.log('New Blog Added');
-            setIsPending(false);
-            history.push('/')
-        })
-    }
-    return (
-        <div className="create">
-            <h2>Add New Blog</h2>
-            <form onSubmit={handleSubmit}>
-                <label>Blog title:</label>
-                <input type="text" required value={title} onChange={(e) => setTitle(e.target.value)}/>
-                <label>Blog Body:</label>
-                <textarea required value={body} onChange={(e) => setBody(e.target.value)}></textarea>
-                {/* <input type="file" value={ image } onChange={(e) => setImage(e.target.files[0])} name="myFile" id="filename" placeholder="Upload Image" /> */}
-                <label>Blog Author:</label>
-                <input type='text' required value={author} onChange={(e) => setAuthor(e.target.value)}/>
-                {!isPending && <button>Add Blog</button>}
-                {isPending && <button disabled>Adding Blog....</button>}
-                {/* <p>{ title }</p>
-                <p>{ body }</p>
-                <p>{ author }</p>
-                <img src={image} alt="" /> */}
-            </form>
-        </div>
-    );
-}
- 
 export default create;

@@ -6,7 +6,7 @@ const BlogList = ({blogs, title}) => {
             <h2>{ title }</h2>
             {blogs.map((blog) => (
                 <div className="blog-preview" key={blog.id}>
-                    <Link to={`/blogs/${blog.id}`} style={{
+                    <Link to={"/" + blog.id} style={{
                         textDecoration: 'none'
                     }}>
                     <h2>{ blog.title }</h2>
