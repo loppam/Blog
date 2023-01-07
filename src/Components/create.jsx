@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { db } from "./firebase";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   collection,
   getDocs,
@@ -18,7 +18,7 @@ const create = () => {
   const [newauthor, setnewAuthor] = useState("");
   const [blogDetails, setBlogDetails] = useState([]);
   const blogDetailsCollectionRef = collection(db, "blogdetails");
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getBlogDetails = async () => {
@@ -35,7 +35,7 @@ const create = () => {
       body: newbody,
       title: newtitle,
     });
-    history.push("/");
+    navigate("/");
   };
   return (
     <div className="create">

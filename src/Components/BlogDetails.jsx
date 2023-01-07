@@ -2,18 +2,18 @@ import { useParams} from "react-router-dom";
 import { useEffect, useState } from "react";
 import { db } from "./firebase";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const BlogDetails = () => {
   const [blogDetails, setBlogDetails] = useState([]);
   const blogDetailsCollectionRef = collection(db, "blogdetails");
   const { id } = useParams();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const deleteBlog = async (id) => {
     const blogDoc = doc(db, "blogdetails", id);
     await deleteDoc(blogDoc);
-    history.push("/");
+    navigate("/");
   };
   useEffect(() => {
     const getBlogDetails = async () => {
