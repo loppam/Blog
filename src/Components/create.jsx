@@ -52,7 +52,7 @@ const create = () => {
         <label>Blog Body:</label>
         <textarea
           required
-          minLength='1000'
+          minLength='500'
           onChange={(event) => {
             setnewBody(event.target.value);
           }}
