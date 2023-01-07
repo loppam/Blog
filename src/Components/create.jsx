@@ -52,6 +52,7 @@ const create = () => {
         <label>Blog Body:</label>
         <textarea
           required
+          minLength='1000'
           onChange={(event) => {
             setnewBody(event.target.value);
           }}
@@ -65,7 +66,6 @@ const create = () => {
           }}
         />
         <button>Add Blog</button>
-        {/* <input type="submit" value="Add Blog" /> */}
       </form>
     </div>
   );
